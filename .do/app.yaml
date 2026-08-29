@@ -1,0 +1,9 @@
+name: crack-the-vault
+static_sites:
+  - name: vault-prototype
+    github:
+      repo: mamols/Crack_The_Vault
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    output_dir: /
