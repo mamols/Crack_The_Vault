@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crack the Vault — Prototype</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#0F1218;
+    --panel:#171B24;
+    --panel-2:#1D222D;
+    --brass:#C9A961;
+    --brass-bright:#E8C97A;
+    --steel:#5B7FA6;
+    --emerald:#3A8F6B;
+    --ember:#C9603D;
+    --paper:#E9E4D8;
+    --muted:#7B8394;
+    --rarity-common:#9CA3AF;
+    --rarity-rare:#5B8FC9;
+    --rarity-legendary:#E8C97A;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 50% -10%, #232A38 0%, var(--ink) 55%);
+    color:var(--paper);
+    font-family:'IBM Plex Sans',sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:32px 16px 60px;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Big Shoulders Display',sans-serif;
+    font-weight:800;
+    font-size:clamp(28px,6vw,44px);
+    letter-spacing:.02em;
+    margin:0 0 4px;
+    text-transform:uppercase;
+  }
+  .subtitle{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:28px;
+    text-align:center;
+    max-width:420px;
+  }
+
+  /* --- Rarity selector --- */
+  .rarity-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:20px;
+    align-items:center;
+  }
+  .sound-toggle{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:var(--panel);
+    border:1px solid #2A3140;
+    color:var(--muted);
+    padding:8px 14px;
+    border-radius:3px;
+    cursor:pointer;
+    margin-bottom:28px;
+  }
+  .sound-toggle.on{ color:var(--brass-bright); border-color:var(--brass); }
+  .rarity-btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:var(--panel);
+    border:1px solid #2A3140;
+    color:var(--muted);
+    padding:8px 14px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .rarity-btn.active[data-r="common"]{border-color:var(--rarity-common);color:var(--rarity-common);background:#1B1F27;}
+  .rarity-btn.active[data-r="rare"]{border-color:var(--rarity-rare);color:var(--rarity-rare);background:#151C27;}
+  .rarity-btn.active[data-r="legendary"]{border-color:var(--rarity-legendary);color:var(--rarity-legendary);background:#221D14;}
+
+  /* --- Vault --- */
+  .vault-stage{
+    perspective:1200px;
+    width:min(320px,80vw);
+    aspect-ratio:1/1;
+    margin-bottom:8px;
+    position:relative;
+  }
+  .vault-glow{
+    position:absolute;
+    inset:-30px;
+    border-radius:50%;
+    filter:blur(28px);
+    opacity:.55;
+    transition:background 0.4s ease, opacity .4s ease;
+    z-index:0;
+  }
+  .vault-glow[data-r="common"]{background:radial-gradient(circle, var(--rarity-common), transparent 70%);}
+  .vault-glow[data-r="rare"]{background:radial-gradient(circle, var(--rarity-rare), transparent 70%);}
+  .vault-glow[data-r="legendary"]{background:radial-gradient(circle, var(--rarity-legendary), transparent 70%);}
+  .vault-glow.pulse{animation:pulseGlow 1.6s ease-in-out infinite;}
+  @keyframes pulseGlow{
+    0%,100%{opacity:.4; transform:scale(1);}
+    50%{opacity:.75; transform:scale(1.06);}
+  }
+
+  .vault-door{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 35% 30%, #2B3140 0%, #1A1E27 55%, #12151C 100%);
+    box-shadow:
+      inset 0 0 0 6px #0C0E13,
+      inset 0 0 0 10px #333A48,
+      0 20px 50px rgba(0,0,0,.6);
+    transform-style:preserve-3d;
+    transform-origin:left center;
+    transition:transform 1.1s cubic-bezier(.6,0,.3,1);
+    z-index:2;
+  }
+  .vault-door.open{
+    transform:rotateY(-115deg);
+  }
+
+  .rivet{
+    position:absolute;
+    width:8px;height:8px;
+    border-radius:50%;
+    background:#3D4454;
+    box-shadow:0 1px 0 rgba(255,255,255,.08), inset 0 1px 1px rgba(0,0,0,.6);
+  }
+
+  .dial{
+    position:absolute;
+    top:50%;left:50%;
+    width:46%;
+    aspect-ratio:1/1;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 40% 35%, #3A4152, #181C24 70%);
+    box-shadow:
+      inset 0 0 0 3px #0D0F14,
+      inset 0 6px 12px rgba(0,0,0,.6),
+      0 6px 14px rgba(0,0,0,.5);
+    transition:transform 1s cubic-bezier(.5,0,.4,1);
+  }
+  .dial::before{
+    content:"";
+    position:absolute;
+    top:8%; left:50%;
+    width:3px; height:16%;
+    background:var(--brass);
+    transform:translateX(-50%);
+    border-radius:2px;
+  }
+  .dial-center{
+    position:absolute;
+    top:50%;left:50%;
+    width:14%;
+    aspect-ratio:1/1;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--brass-bright), #7A6636 80%);
+    box-shadow:0 2px 4px rgba(0,0,0,.5);
+  }
+
+  .tumblers{
+    position:absolute;
+    top:14%; left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:10px;
+  }
+  .tumbler{
+    width:8px;height:8px;
+    border-radius:50%;
+    background:#3D4454;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.6);
+    transition:background .25s ease, box-shadow .25s ease;
+  }
+  .tumbler.lit{
+    background:var(--brass-bright);
+    box-shadow:0 0 8px var(--brass-bright), inset 0 0 2px #fff;
+  }
+
+  .lever{
+    position:absolute;
+    bottom:6%; left:50%;
+    transform:translateX(-50%);
+    width:30%;
+    height:6%;
+    background:linear-gradient(180deg,#4A5262,#242832);
+    border-radius:6px;
+    box-shadow:0 2px 4px rgba(0,0,0,.5);
+    transition:transform .3s ease;
+  }
+  .lever.pulled{ transform:translateX(-50%) rotate(-14deg); }
+
+  .light-beam{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(232,201,122,.9), rgba(232,201,122,0) 60%);
+    opacity:0;
+    z-index:1;
+    pointer-events:none;
+  }
+  .light-beam.flash{ animation:beamFlash 1s ease-out forwards; }
+  @keyframes beamFlash{
+    0%{opacity:0;}
+    30%{opacity:1;}
+    100%{opacity:0;}
+  }
+
+  .reward-card{
+    position:absolute;
+    top:50%; left:50%;
+    width:64%;
+    transform:translate(-50%,-40%) scale(.7);
+    background:var(--panel-2);
+    border:1px solid #2A3140;
+    border-radius:8px;
+    padding:16px;
+    text-align:center;
+    opacity:0;
+    z-index:3;
+    transition:all .6s cubic-bezier(.3,1.4,.5,1) .5s;
+  }
+  .reward-card.show{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+  }
+  .reward-card .r-eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .reward-card .r-icon{ font-size:30px; margin-bottom:6px; }
+  .reward-card .r-text{ font-size:13px; color:var(--paper); line-height:1.4; }
+
+  /* --- Guess UI --- */
+  .panel{
+    background:var(--panel);
+    border:1px solid #262C38;
+    border-radius:10px;
+    padding:20px;
+    width:min(420px,92vw);
+    margin-top:28px;
+  }
+  .panel-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:12px;
+  }
+  .slots{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:18px;
+  }
+  .slot{
+    width:44px;height:44px;
+    border-radius:50%;
+    background:#12151C;
+    border:2px solid #2A3140;
+    display:flex;align-items:center;justify-content:center;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .slot.filled{ border-color:transparent; }
+  .slot-dot{ width:26px;height:26px;border-radius:50%; }
+
+  .palette{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+  .swatch{
+    width:36px;height:36px;
+    border-radius:50%;
+    cursor:pointer;
+    border:2px solid rgba(255,255,255,.15);
+    transition:transform .12s ease;
+  }
+  .swatch:hover{ transform:scale(1.08); }
+
+  .controls{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+  }
+  button.action{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:var(--brass);
+    color:#1A1508;
+    border:none;
+    padding:10px 18px;
+    border-radius:4px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  button.action:disabled{
+    background:#3A3F4A;
+    color:#7B8394;
+    cursor:not-allowed;
+  }
+  button.ghost{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:transparent;
+    color:var(--muted);
+    border:1px solid #2A3140;
+    padding:10px 16px;
+    border-radius:4px;
+    cursor:pointer;
+  }
+
+  .history{
+    margin-top:18px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    max-height:220px;
+    overflow-y:auto;
+  }
+  .history-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#12151C;
+    border:1px solid #232A38;
+    border-radius:6px;
+    padding:8px 10px;
+  }
+  .history-dots{ display:flex; gap:5px; }
+  .history-dot{ width:16px;height:16px;border-radius:50%; }
+  .feedback{ display:flex; gap:3px; margin-left:auto; }
+  .peg{ width:9px;height:9px;border-radius:50%; }
+  .peg.black{ background:#4CAF6D; box-shadow:0 0 4px rgba(76,175,109,.6); }
+  .peg.white{ background:#D9B84A; box-shadow:0 0 3px rgba(217,184,74,.4); }
+
+  .legend{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    align-items:center;
+    margin-top:14px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    color:var(--muted);
+    letter-spacing:.02em;
+  }
+  .legend-item{ display:flex; align-items:center; gap:6px; }
+  .legend-dot{ width:9px;height:9px;border-radius:50%; flex-shrink:0; }
+
+  .guess-count{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--muted);
+    text-align:center;
+    margin-top:12px;
+  }
+
+  .status-msg{
+    text-align:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.05em;
+    margin-top:10px;
+    min-height:16px;
+  }
+  .status-msg.win{ color:var(--brass-bright); }
+  .status-msg.lose{ color:var(--ember); }
+</style>
+</head>
+<body>
+
+  <div class="eyebrow">Crack the Code — Prototype</div>
+  <h1>The Vault</h1>
+  <p class="subtitle">Guess the 4-peg combination. Crack it before you run out of attempts to reveal what's inside.</p>
+
+  <div class="rarity-row" id="rarityRow">
+    <button class="rarity-btn active" data-r="common">Common</button>
+    <button class="rarity-btn" data-r="rare">Rare</button>
+    <button class="rarity-btn" data-r="legendary">Legendary</button>
+  </div>
+  <button class="sound-toggle on" id="soundToggle">🔊 Sound On</button>
+
+  <div class="vault-stage">
+    <div class="vault-glow" data-r="common" id="vaultGlow"></div>
+    <div class="light-beam" id="lightBeam"></div>
+    <div class="vault-door" id="vaultDoor">
+      <div class="tumblers" id="tumblers"></div>
+      <div class="dial" id="dial"></div>
+      <div class="dial-center"></div>
+      <div class="lever" id="lever"></div>
+    </div>
+    <div class="reward-card" id="rewardCard">
+      <div class="r-eyebrow" id="rewardRarityLabel" style="color:var(--rarity-common)">Common Vault</div>
+      <div class="r-icon">🎁</div>
+      <div class="r-text" id="rewardText">Mystery reward unlocked.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">Your Guess</div>
+    <div class="slots" id="slots"></div>
+    <div class="palette" id="palette"></div>
+    <div class="controls">
+      <button class="action" id="submitBtn" disabled>Submit Guess</button>
+      <button class="ghost" id="resetBtn">New Vault</button>
+    </div>
+    <div class="guess-count" id="guessCount">Attempts left: 8</div>
+    <div class="status-msg" id="statusMsg"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#4CAF6D;box-shadow:0 0 4px rgba(76,175,109,.6)"></div>Right color, right spot</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#D9B84A;box-shadow:0 0 3px rgba(217,184,74,.4)"></div>Right color, wrong spot</div>
+    </div>
+    <div class="history" id="history"></div>
+  </div>
+
+<script>
+const COLORS = [
+  {id:'red',    hex:'#C9603D'},
+  {id:'blue',   hex:'#5B7FA6'},
+  {id:'green',  hex:'#3A8F6B'},
+  {id:'gold',   hex:'#C9A961'},
+  {id:'purple', hex:'#8368A8'},
+  {id:'pink',   hex:'#C15B8E'},
+];
+const CODE_LEN = 4;
+const MAX_GUESSES = 8;
+const RARITY_LABELS = { common:'Common Vault', rare:'Rare Vault', legendary:'Legendary Vault' };
+const REWARD_TEXT = {
+  common: "A quick voice memo from your friend, recorded just for this vault.",
+  rare: "A photo your friend picked specifically to surprise you.",
+  legendary: "A short video — the hardest vault gets the biggest reveal."
+};
+
+let secretCode = [];
+let currentGuess = [];
+let guessesLeft = MAX_GUESSES;
+let gameOver = false;
+let currentRarity = 'common';
+let soundOn = true;
+
+/* ---------- Sound engine (Web Audio API, no external files) ---------- */
+let actx = null;
+function ensureAudio(){
+  if(!actx){ actx = new (window.AudioContext || window.webkitAudioContext)(); }
+  if(actx.state === 'suspended') actx.resume();
+  return actx;
+}
+
+function tone({freq=440, dur=0.12, type='sine', gain=0.18, delay=0, glideTo=null, glideDur=0}={}){
+  if(!soundOn) return;
+  const ctx = ensureAudio();
+  const t0 = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  if(glideTo !== null){
+    osc.frequency.linearRampToValueAtTime(glideTo, t0 + glideDur);
+  }
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(gain, t0 + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(g).connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.02);
+}
+
+function noiseBurst({dur=0.15, gain=0.15, delay=0, filterFreq=1200, type='lowpass'}={}){
+  if(!soundOn) return;
+  const ctx = ensureAudio();
+  const t0 = ctx.currentTime + delay;
+  const bufferSize = Math.floor(ctx.sampleRate * dur);
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++){ data[i] = (Math.random()*2-1) * (1 - i/bufferSize); }
+  const src = ctx.createBufferSource();
+  src.buffer = buffer;
+  const filt = ctx.createBiquadFilter();
+  filt.type = type;
+  filt.frequency.value = filterFreq;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(gain, t0);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  src.connect(filt).connect(g).connect(ctx.destination);
+  src.start(t0);
+}
+
+function playClick(){
+  tone({freq:280, dur:0.06, type:'square', gain:0.12});
+}
+
+function playSlotFill(){
+  tone({freq:520, dur:0.05, type:'sine', gain:0.1});
+}
+
+function playPegBlack(){ // right color, right spot
+  tone({freq:660, dur:0.16, type:'triangle', gain:0.16, glideTo:880, glideDur:0.1});
+}
+function playPegWhite(){ // right color, wrong spot
+  tone({freq:340, dur:0.14, type:'triangle', gain:0.13});
+}
+
+function playDialSpin(){
+  const ctx = ensureAudio();
+  const t0 = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(90, t0);
+  osc.frequency.linearRampToValueAtTime(240, t0 + 0.5);
+  osc.frequency.linearRampToValueAtTime(60, t0 + 0.9);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.linearRampToValueAtTime(0.08, t0 + 0.1);
+  g.gain.linearRampToValueAtTime(0.0001, t0 + 0.9);
+  if(soundOn){
+    osc.connect(g).connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + 1.0);
+  }
+}
+
+function playTumblerClicks(count){
+  for(let i=0;i<count;i++){
+    noiseBurst({dur:0.05, gain:0.14, delay:0.05 + i*0.09, filterFreq:3000, type:'highpass'});
+    tone({freq:1200, dur:0.03, type:'square', gain:0.05, delay:0.05 + i*0.09});
+  }
+}
+
+function playDoorThunk(){
+  noiseBurst({dur:0.35, gain:0.28, delay:0, filterFreq:220, type:'lowpass'});
+  tone({freq:70, dur:0.4, type:'sine', gain:0.22});
+}
+
+function playWhoosh(){
+  noiseBurst({dur:0.7, gain:0.12, delay:0.05, filterFreq:1800, type:'lowpass'});
+}
+
+function playRewardChime(rarity){
+  const chords = {
+    common: [523.25, 659.25],
+    rare: [523.25, 659.25, 783.99],
+    legendary: [523.25, 659.25, 783.99, 987.77]
+  };
+  const notes = chords[rarity] || chords.common;
+  notes.forEach((f,i) => tone({freq:f, dur:0.6, type:'sine', gain:0.1, delay:i*0.07}));
+}
+
+function playLockFail(){
+  tone({freq:180, dur:0.3, type:'sawtooth', gain:0.15});
+  tone({freq:120, dur:0.4, type:'sawtooth', gain:0.15, delay:0.15});
+}
+
+const slotsEl = document.getElementById('slots');
+const paletteEl = document.getElementById('palette');
+const submitBtn = document.getElementById('submitBtn');
+const resetBtn = document.getElementById('resetBtn');
+const historyEl = document.getElementById('history');
+const guessCountEl = document.getElementById('guessCount');
+const statusMsgEl = document.getElementById('statusMsg');
+const vaultDoor = document.getElementById('vaultDoor');
+const vaultGlow = document.getElementById('vaultGlow');
+const dial = document.getElementById('dial');
+const lever = document.getElementById('lever');
+const tumblersEl = document.getElementById('tumblers');
+const lightBeam = document.getElementById('lightBeam');
+const rewardCard = document.getElementById('rewardCard');
+const rewardRarityLabel = document.getElementById('rewardRarityLabel');
+const rewardText = document.getElementById('rewardText');
+const rarityRow = document.getElementById('rarityRow');
+
+function colorHex(id){ return COLORS.find(c=>c.id===id).hex; }
+
+function newSecret(){
+  return Array.from({length:CODE_LEN}, () => COLORS[Math.floor(Math.random()*COLORS.length)].id);
+}
+
+function buildTumblers(){
+  tumblersEl.innerHTML = '';
+  for(let i=0;i<CODE_LEN;i++){
+    const t = document.createElement('div');
+    t.className = 'tumbler';
+    tumblersEl.appendChild(t);
+  }
+}
+
+function buildSlots(){
+  slotsEl.innerHTML = '';
+  for(let i=0;i<CODE_LEN;i++){
+    const s = document.createElement('div');
+    s.className = 'slot';
+    s.dataset.index = i;
+    slotsEl.appendChild(s);
+  }
+}
+
+function buildPalette(){
+  paletteEl.innerHTML = '';
+  COLORS.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'swatch';
+    sw.style.background = c.hex;
+    sw.title = c.id;
+    sw.addEventListener('click', () => addToGuess(c.id));
+    paletteEl.appendChild(sw);
+  });
+}
+
+function addToGuess(colorId){
+  if(gameOver || currentGuess.length >= CODE_LEN) return;
+  currentGuess.push(colorId);
+  playSlotFill();
+  renderSlots();
+}
+
+function renderSlots(){
+  const children = slotsEl.children;
+  for(let i=0;i<CODE_LEN;i++){
+    const slot = children[i];
+    if(currentGuess[i]){
+      slot.classList.add('filled');
+      slot.innerHTML = `<div class="slot-dot" style="background:${colorHex(currentGuess[i])}"></div>`;
+      slot.onclick = () => { currentGuess.splice(i,1); renderSlots(); };
+    } else {
+      slot.classList.remove('filled');
+      slot.innerHTML = '';
+      slot.onclick = null;
+    }
+  }
+  submitBtn.disabled = currentGuess.length !== CODE_LEN || gameOver;
+}
+
+function evaluateGuess(guess, secret){
+  let black = 0;
+  const secretRemain = [];
+  const guessRemain = [];
+  for(let i=0;i<CODE_LEN;i++){
+    if(guess[i] === secret[i]) black++;
+    else { secretRemain.push(secret[i]); guessRemain.push(guess[i]); }
+  }
+  let white = 0;
+  const used = [];
+  guessRemain.forEach(g => {
+    const idx = secretRemain.findIndex((s,i) => s===g && !used.includes(i));
+    if(idx !== -1){ white++; used.push(idx); }
+  });
+  return {black, white};
+}
+
+function addHistoryRow(guess, fb){
+  const row = document.createElement('div');
+  row.className = 'history-row';
+  const dots = document.createElement('div');
+  dots.className = 'history-dots';
+  guess.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'history-dot';
+    d.style.background = colorHex(c);
+    dots.appendChild(d);
+  });
+  const pegs = document.createElement('div');
+  pegs.className = 'feedback';
+  for(let i=0;i<fb.black;i++){
+    const p = document.createElement('div'); p.className='peg black'; pegs.appendChild(p);
+  }
+  for(let i=0;i<fb.white;i++){
+    const p = document.createElement('div'); p.className='peg white'; pegs.appendChild(p);
+  }
+  row.appendChild(dots);
+  row.appendChild(pegs);
+  historyEl.prepend(row);
+}
+
+function litTumblers(black){
+  const tumblers = tumblersEl.children;
+  for(let i=0;i<tumblers.length;i++){
+    tumblers[i].classList.toggle('lit', i < black);
+  }
+}
+
+function submitGuess(){
+  if(currentGuess.length !== CODE_LEN || gameOver) return;
+  const fb = evaluateGuess(currentGuess, secretCode);
+  addHistoryRow(currentGuess, fb);
+  guessesLeft--;
+  guessCountEl.textContent = `Attempts left: ${guessesLeft}`;
+
+  playClick();
+  dial.style.transform = `translate(-50%,-50%) rotate(${Math.random()*360+180}deg)`;
+  litTumblers(fb.black);
+
+  for(let i=0;i<fb.black;i++){ setTimeout(playPegBlack, 120 + i*90); }
+  for(let i=0;i<fb.white;i++){ setTimeout(playPegWhite, 120 + (fb.black+i)*90); }
+
+  if(fb.black === CODE_LEN){
+    winGame();
+  } else if(guessesLeft <= 0){
+    setTimeout(loseGame, 120 + (fb.black+fb.white)*90 + 150);
+  } else {
+    currentGuess = [];
+    renderSlots();
+  }
+}
+
+function winGame(){
+  gameOver = true;
+  submitBtn.disabled = true;
+  statusMsgEl.textContent = 'CRACKED! Opening the vault...';
+  statusMsgEl.className = 'status-msg win';
+  lever.classList.add('pulled');
+  vaultGlow.classList.add('pulse');
+
+  playDialSpin();
+  playTumblerClicks(CODE_LEN);
+  setTimeout(() => {
+    vaultDoor.classList.add('open');
+    lightBeam.classList.add('flash');
+    playDoorThunk();
+    playWhoosh();
+  }, 400);
+  setTimeout(() => {
+    rewardRarityLabel.textContent = RARITY_LABELS[currentRarity];
+    rewardRarityLabel.style.color = `var(--rarity-${currentRarity})`;
+    rewardText.textContent = REWARD_TEXT[currentRarity];
+    rewardCard.classList.add('show');
+    playRewardChime(currentRarity);
+  }, 900);
+}
+
+function loseGame(){
+  gameOver = true;
+  submitBtn.disabled = true;
+  statusMsgEl.textContent = 'Out of attempts. The vault stays locked — try a new one.';
+  statusMsgEl.className = 'status-msg lose';
+  playLockFail();
+}
+
+function resetGame(){
+  secretCode = newSecret();
+  currentGuess = [];
+  guessesLeft = MAX_GUESSES;
+  gameOver = false;
+  historyEl.innerHTML = '';
+  guessCountEl.textContent = `Attempts left: ${guessesLeft}`;
+  statusMsgEl.textContent = '';
+  statusMsgEl.className = 'status-msg';
+  vaultDoor.classList.remove('open');
+  vaultGlow.classList.remove('pulse');
+  lever.classList.remove('pulled');
+  lightBeam.classList.remove('flash');
+  rewardCard.classList.remove('show');
+  buildTumblers();
+  buildSlots();
+  renderSlots();
+}
+
+const soundToggle = document.getElementById('soundToggle');
+soundToggle.addEventListener('click', () => {
+  ensureAudio();
+  soundOn = !soundOn;
+  soundToggle.textContent = soundOn ? '🔊 Sound On' : '🔇 Sound Off';
+  soundToggle.classList.toggle('on', soundOn);
+});
+
+rarityRow.addEventListener('click', (e) => {
+  const btn = e.target.closest('.rarity-btn');
+  if(!btn) return;
+  [...rarityRow.children].forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRarity = btn.dataset.r;
+  vaultGlow.dataset.r = currentRarity;
+});
+
+submitBtn.addEventListener('click', submitGuess);
+resetBtn.addEventListener('click', resetGame);
+
+buildPalette();
+resetGame();
+</script>
+</body>
+</html>
