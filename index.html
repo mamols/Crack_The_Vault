@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Crack the Vault — Prototype</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
@@ -56,9 +56,238 @@
   .subtitle{
     color:var(--muted);
     font-size:14px;
-    margin-bottom:28px;
+    margin-bottom:20px;
     text-align:center;
     max-width:420px;
+  }
+
+  /* --- Mode tabs --- */
+  .mode-tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .mode-tab{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:9px 18px;
+    border-radius:20px;
+    border:1px solid #2A3140;
+    background:var(--panel);
+    color:var(--muted);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .mode-tab.active{
+    background:var(--brass);
+    color:#1A1508;
+    border-color:var(--brass);
+    font-weight:600;
+  }
+  .mode-subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:12.5px;
+    margin-bottom:18px;
+    max-width:420px;
+    min-height:16px;
+  }
+  .mode-stats{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:16px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+  }
+  .stat-badge{
+    background:var(--panel);
+    border:1px solid #2A3140;
+    border-radius:20px;
+    padding:6px 14px;
+    color:var(--brass-bright);
+  }
+  .stat-badge.muted{ color:var(--muted); }
+
+  /* --- Friend sub-tabs (Build vs Play) --- */
+  .subtabs{
+    display:flex;
+    gap:6px;
+    margin-bottom:16px;
+  }
+  .subtab{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:7px 14px;
+    border-radius:16px;
+    border:1px solid #2A3140;
+    background:transparent;
+    color:var(--muted);
+    cursor:pointer;
+  }
+  .subtab.active{
+    border-color:var(--steel);
+    color:var(--steel);
+  }
+
+  /* --- Builder panel --- */
+  .builder-panel{
+    background:var(--panel);
+    border:1px solid #262C38;
+    border-radius:10px;
+    padding:20px;
+    width:min(420px,92vw);
+  }
+  .builder-field{ margin-bottom:16px; }
+  .builder-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:8px;
+    display:block;
+  }
+  .builder-input{
+    width:100%;
+    background:#12151C;
+    border:1px solid #2A3140;
+    border-radius:6px;
+    color:var(--paper);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:13px;
+    padding:10px 12px;
+    resize:vertical;
+  }
+  .builder-input:focus{ outline:none; border-color:var(--steel); }
+  .builder-help{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+    line-height:1.4;
+  }
+  .share-box{
+    margin-top:18px;
+    background:#12151C;
+    border:1px solid var(--brass);
+    border-radius:6px;
+    padding:14px;
+  }
+  .share-box textarea{
+    width:100%;
+    background:transparent;
+    border:none;
+    color:var(--brass-bright);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    resize:none;
+    height:70px;
+  }
+  .share-box textarea:focus{ outline:none; }
+  .copy-btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    background:var(--brass);
+    color:#1A1508;
+    border:none;
+    padding:8px 14px;
+    border-radius:4px;
+    cursor:pointer;
+    margin-top:8px;
+    font-weight:600;
+  }
+  .builder-error{
+    color:var(--ember);
+    font-size:12px;
+    margin-top:6px;
+    min-height:14px;
+  }
+  .incoming-banner{
+    background:var(--panel-2);
+    border:1px solid var(--steel);
+    border-radius:6px;
+    padding:10px 14px;
+    font-size:12px;
+    color:var(--steel);
+    margin-bottom:16px;
+    text-align:center;
+    max-width:420px;
+  }
+
+  /* --- Leaderboard --- */
+  .leaderboard-btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:transparent;
+    color:var(--brass-bright);
+    border:1px solid var(--brass);
+    padding:8px 14px;
+    border-radius:4px;
+    cursor:pointer;
+    margin-bottom:16px;
+  }
+  .leaderboard-panel{
+    background:var(--panel);
+    border:1px solid #262C38;
+    border-radius:10px;
+    padding:20px;
+    width:min(420px,92vw);
+  }
+  .leaderboard-note{
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:14px;
+    line-height:1.4;
+  }
+  .lb-table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  .lb-table th{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--muted);
+    text-align:left;
+    padding:6px 8px;
+    border-bottom:1px solid #262C38;
+  }
+  .lb-table td{
+    font-size:12.5px;
+    padding:7px 8px;
+    border-bottom:1px solid #1D222D;
+  }
+  .lb-table tr.gold td{ color:var(--rarity-legendary); }
+  .lb-table tr.silver td{ color:#C9CDD6; }
+  .lb-table tr.bronze td{ color:#C08A5C; }
+  .lb-empty{
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    padding:20px 0;
+  }
+  .lb-tier-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    font-weight:600;
+    margin:16px 0 6px;
+  }
+  .lb-tier-label:first-child{ margin-top:0; }
+  .lb-back{
+    margin-top:14px;
   }
 
   /* --- Rarity selector --- */
@@ -68,20 +297,6 @@
     margin-bottom:20px;
     align-items:center;
   }
-  .sound-toggle{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    background:var(--panel);
-    border:1px solid #2A3140;
-    color:var(--muted);
-    padding:8px 14px;
-    border-radius:3px;
-    cursor:pointer;
-    margin-bottom:28px;
-  }
-  .sound-toggle.on{ color:var(--brass-bright); border-color:var(--brass); }
   .rarity-btn{
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
@@ -98,6 +313,21 @@
   .rarity-btn.active[data-r="common"]{border-color:var(--rarity-common);color:var(--rarity-common);background:#1B1F27;}
   .rarity-btn.active[data-r="rare"]{border-color:var(--rarity-rare);color:var(--rarity-rare);background:#151C27;}
   .rarity-btn.active[data-r="legendary"]{border-color:var(--rarity-legendary);color:var(--rarity-legendary);background:#221D14;}
+
+  .sound-toggle{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:var(--panel);
+    border:1px solid #2A3140;
+    color:var(--muted);
+    padding:8px 14px;
+    border-radius:3px;
+    cursor:pointer;
+    margin-bottom:28px;
+  }
+  .sound-toggle.on{ color:var(--brass-bright); border-color:var(--brass); }
 
   /* --- Vault --- */
   .vault-stage{
@@ -142,14 +372,6 @@
   }
   .vault-door.open{
     transform:rotateY(-115deg);
-  }
-
-  .rivet{
-    position:absolute;
-    width:8px;height:8px;
-    border-radius:50%;
-    background:#3D4454;
-    box-shadow:0 1px 0 rgba(255,255,255,.08), inset 0 1px 1px rgba(0,0,0,.6);
   }
 
   .dial{
@@ -317,6 +539,7 @@
     display:flex;
     gap:10px;
     justify-content:center;
+    flex-wrap:wrap;
   }
   button.action{
     font-family:'IBM Plex Mono',monospace;
@@ -348,6 +571,30 @@
     border-radius:4px;
     cursor:pointer;
   }
+  button.hint{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:transparent;
+    color:var(--steel);
+    border:1px solid var(--steel);
+    padding:10px 16px;
+    border-radius:4px;
+    cursor:pointer;
+  }
+  button.hint:disabled{
+    color:#4A5568;
+    border-color:#2A3140;
+    cursor:not-allowed;
+  }
+  button.ghost:disabled{
+    color:#4A5568;
+    border-color:#232936;
+    cursor:not-allowed;
+    opacity:.7;
+  }
+  .hidden{ display:none !important; }
 
   .history{
     margin-top:18px;
@@ -405,6 +652,7 @@
   }
   .status-msg.win{ color:var(--brass-bright); }
   .status-msg.lose{ color:var(--ember); }
+  .status-msg.info{ color:var(--steel); }
 </style>
 </head>
 <body>
@@ -413,7 +661,69 @@
   <h1>The Vault</h1>
   <p class="subtitle">Guess the 4-peg combination. Crack it before you run out of attempts to reveal what's inside.</p>
 
-  <div class="rarity-row" id="rarityRow">
+  <div class="mode-tabs" id="modeTabs">
+    <button class="mode-tab active" data-mode="solo">Solo</button>
+    <button class="mode-tab" data-mode="friend">Friend-to-Friend</button>
+    <button class="mode-tab" data-mode="public">Public</button>
+  </div>
+  <div class="mode-subtitle" id="modeSubtitle"></div>
+  <div class="incoming-banner hidden" id="incomingBanner"></div>
+  <div class="subtabs hidden" id="friendSubtabs">
+    <button class="subtab active" data-sub="play">Play a Vault</button>
+    <button class="subtab" data-sub="build">Build a Vault</button>
+  </div>
+  <div class="mode-stats" id="modeStats"></div>
+  <button class="leaderboard-btn hidden" id="leaderboardBtn">🏆 View Leaderboard</button>
+
+  <div class="leaderboard-panel hidden" id="leaderboardPanel">
+    <div class="panel-label">Public Vault Leaderboard</div>
+    <div class="leaderboard-note">This is stored on this device only for now — once Public mode has a real backend, this will show everyone's results, not just yours.</div>
+    <div id="leaderboardContent"></div>
+    <button class="ghost lb-back" id="leaderboardBackBtn">Back to Vault</button>
+  </div>
+
+  <div id="builderPanel" class="builder-panel hidden">
+    <div class="panel-label">Build a Vault for a Friend</div>
+
+    <div class="builder-field">
+      <label class="builder-label">1. Choose rarity (sets the difficulty)</label>
+      <div class="rarity-row" id="builderRarityRow" style="margin-bottom:0;">
+        <button class="rarity-btn active" data-r="common">Common — 4 pegs, 8 guesses</button>
+        <button class="rarity-btn" data-r="rare">Rare — 5 pegs, 8 guesses</button>
+        <button class="rarity-btn" data-r="legendary">Legendary — 5 pegs, 6 guesses</button>
+      </div>
+    </div>
+
+    <div class="builder-field">
+      <label class="builder-label">2. Set the secret code</label>
+      <div class="slots" id="builderSlots"></div>
+      <div class="palette" id="builderPalette"></div>
+    </div>
+
+    <div class="builder-field">
+      <label class="builder-label">3. Mystery reward (what they'll unlock)</label>
+      <textarea class="builder-input" id="builderReward" rows="2" placeholder="e.g. a photo from our trip, a voice memo, a note..."></textarea>
+      <button class="ghost" id="photoComingSoonBtn" style="margin-top:8px;" disabled>📷 Add Photo — Coming Soon</button>
+      <div class="builder-help">Photo/video/voice uploads are on the way. For now, describe the reward in words above.</div>
+    </div>
+
+    <div class="builder-field">
+      <label class="builder-label">4. Optional hint</label>
+      <textarea class="builder-input" id="builderHint" rows="1" placeholder="e.g. it's not a color you'd expect..."></textarea>
+    </div>
+
+    <button class="action" id="generateLinkBtn">Generate Vault Link</button>
+    <div class="builder-error" id="builderError"></div>
+
+    <div class="share-box hidden" id="shareBox">
+      <div class="builder-label" style="margin-bottom:8px;">Send this link to your friend</div>
+      <textarea id="shareLink" readonly></textarea>
+      <button class="copy-btn" id="copyLinkBtn">Copy Link</button>
+    </div>
+  </div>
+
+  <div id="playArea">
+  <div class="rarity-row hidden" id="rarityRow">
     <button class="rarity-btn active" data-r="common">Common</button>
     <button class="rarity-btn" data-r="rare">Rare</button>
     <button class="rarity-btn" data-r="legendary">Legendary</button>
@@ -442,6 +752,7 @@
     <div class="palette" id="palette"></div>
     <div class="controls">
       <button class="action" id="submitBtn" disabled>Submit Guess</button>
+      <button class="hint" id="hintBtn">Use Hint</button>
       <button class="ghost" id="resetBtn">New Vault</button>
     </div>
     <div class="guess-count" id="guessCount">Attempts left: 8</div>
@@ -451,6 +762,7 @@
       <div class="legend-item"><div class="legend-dot" style="background:#D9B84A;box-shadow:0 0 3px rgba(217,184,74,.4)"></div>Right color, wrong spot</div>
     </div>
     <div class="history" id="history"></div>
+  </div>
   </div>
 
 <script>
@@ -462,13 +774,27 @@ const COLORS = [
   {id:'purple', hex:'#8368A8'},
   {id:'pink',   hex:'#C15B8E'},
 ];
-const CODE_LEN = 4;
-const MAX_GUESSES = 8;
+const CODE_LEN_DEFAULT = 4;
+let CODE_LEN = 4;
+let MAX_GUESSES = 8;
 const RARITY_LABELS = { common:'Common Vault', rare:'Rare Vault', legendary:'Legendary Vault' };
+const RARITY_DIFFICULTY = {
+  common:    { codeLen: 4, maxGuesses: 8 },
+  rare:      { codeLen: 5, maxGuesses: 8 },
+  legendary: { codeLen: 5, maxGuesses: 6 }
+};
 const REWARD_TEXT = {
   common: "A quick voice memo from your friend, recorded just for this vault.",
   rare: "A photo your friend picked specifically to surprise you.",
   legendary: "A short video — the hardest vault gets the biggest reveal."
+};
+const SOLO_REWARD_TEXT = "A new vault skin for your collection.";
+const PUBLIC_REWARD_TEXT = "A new dial style, plus credit on the Stumper Board if this vault took others a while.";
+
+const MODE_SUBTITLES = {
+  solo: "Today's daily vault. Crack it to keep your streak alive and earn a cosmetic unlock.",
+  friend: "A vault a friend built just for you — the harder it is, the better the reward.",
+  public: "A vault set by another player. No hints here — it's a level playing field for the leaderboard."
 };
 
 let secretCode = [];
@@ -476,7 +802,17 @@ let currentGuess = [];
 let guessesLeft = MAX_GUESSES;
 let gameOver = false;
 let currentRarity = 'common';
+let currentMode = 'solo';
 let soundOn = true;
+
+let soloStreak = 0;
+let soloHintCharges = 3;
+let friendHintUsed = false;
+let publicAttemptCount = 0;
+let friendSubTab = 'play';
+let incomingVault = null; // {code, rarity, reward, hint} decoded from a shared link
+let builderCode = [];
+let builderRarity = 'common';
 
 /* ---------- Sound engine (Web Audio API, no external files) ---------- */
 let actx = null;
@@ -525,20 +861,11 @@ function noiseBurst({dur=0.15, gain=0.15, delay=0, filterFreq=1200, type='lowpas
   src.start(t0);
 }
 
-function playClick(){
-  tone({freq:280, dur:0.06, type:'square', gain:0.12});
-}
-
-function playSlotFill(){
-  tone({freq:520, dur:0.05, type:'sine', gain:0.1});
-}
-
-function playPegBlack(){ // right color, right spot
-  tone({freq:660, dur:0.16, type:'triangle', gain:0.16, glideTo:880, glideDur:0.1});
-}
-function playPegWhite(){ // right color, wrong spot
-  tone({freq:340, dur:0.14, type:'triangle', gain:0.13});
-}
+function playClick(){ tone({freq:280, dur:0.06, type:'square', gain:0.12}); }
+function playSlotFill(){ tone({freq:520, dur:0.05, type:'sine', gain:0.1}); }
+function playPegBlack(){ tone({freq:660, dur:0.16, type:'triangle', gain:0.16, glideTo:880, glideDur:0.1}); }
+function playPegWhite(){ tone({freq:340, dur:0.14, type:'triangle', gain:0.13}); }
+function playHint(){ tone({freq:900, dur:0.2, type:'sine', gain:0.14, glideTo:1200, glideDur:0.15}); }
 
 function playDialSpin(){
   const ctx = ensureAudio();
@@ -590,10 +917,12 @@ function playLockFail(){
   tone({freq:120, dur:0.4, type:'sawtooth', gain:0.15, delay:0.15});
 }
 
+/* ---------- DOM refs ---------- */
 const slotsEl = document.getElementById('slots');
 const paletteEl = document.getElementById('palette');
 const submitBtn = document.getElementById('submitBtn');
 const resetBtn = document.getElementById('resetBtn');
+const hintBtn = document.getElementById('hintBtn');
 const historyEl = document.getElementById('history');
 const guessCountEl = document.getElementById('guessCount');
 const statusMsgEl = document.getElementById('statusMsg');
@@ -607,9 +936,36 @@ const rewardCard = document.getElementById('rewardCard');
 const rewardRarityLabel = document.getElementById('rewardRarityLabel');
 const rewardText = document.getElementById('rewardText');
 const rarityRow = document.getElementById('rarityRow');
+const soundToggle = document.getElementById('soundToggle');
+const modeTabs = document.getElementById('modeTabs');
+const modeSubtitle = document.getElementById('modeSubtitle');
+const modeStats = document.getElementById('modeStats');
+const friendSubtabs = document.getElementById('friendSubtabs');
+const builderPanel = document.getElementById('builderPanel');
+const playArea = document.getElementById('playArea');
+const builderSlotsEl = document.getElementById('builderSlots');
+const builderPaletteEl = document.getElementById('builderPalette');
+const builderRarityRow = document.getElementById('builderRarityRow');
+const builderRewardEl = document.getElementById('builderReward');
+const builderHintEl = document.getElementById('builderHint');
+const generateLinkBtn = document.getElementById('generateLinkBtn');
+const builderErrorEl = document.getElementById('builderError');
+const shareBox = document.getElementById('shareBox');
+const shareLinkEl = document.getElementById('shareLink');
+const copyLinkBtn = document.getElementById('copyLinkBtn');
+const incomingBanner = document.getElementById('incomingBanner');
+const leaderboardBtn = document.getElementById('leaderboardBtn');
+const leaderboardPanel = document.getElementById('leaderboardPanel');
+const leaderboardContent = document.getElementById('leaderboardContent');
+const leaderboardBackBtn = document.getElementById('leaderboardBackBtn');
 
 function colorHex(id){ return COLORS.find(c=>c.id===id).hex; }
-
+function randomRarity(){
+  const roll = Math.random();
+  if(roll < 0.55) return 'common';
+  if(roll < 0.88) return 'rare';
+  return 'legendary';
+}
 function newSecret(){
   return Array.from({length:CODE_LEN}, () => COLORS[Math.floor(Math.random()*COLORS.length)].id);
 }
@@ -643,6 +999,181 @@ function buildPalette(){
     sw.addEventListener('click', () => addToGuess(c.id));
     paletteEl.appendChild(sw);
   });
+}
+
+/* ---------- Vault builder (Friend-to-Friend: create + share) ---------- */
+function buildBuilderSlots(){
+  builderSlotsEl.innerHTML = '';
+  const len = RARITY_DIFFICULTY[builderRarity].codeLen;
+  for(let i=0;i<len;i++){
+    const s = document.createElement('div');
+    s.className = 'slot';
+    s.dataset.index = i;
+    builderSlotsEl.appendChild(s);
+  }
+}
+
+function buildBuilderPalette(){
+  builderPaletteEl.innerHTML = '';
+  COLORS.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'swatch';
+    sw.style.background = c.hex;
+    sw.title = c.id;
+    sw.addEventListener('click', () => addToBuilderCode(c.id));
+    builderPaletteEl.appendChild(sw);
+  });
+}
+
+function addToBuilderCode(colorId){
+  const len = RARITY_DIFFICULTY[builderRarity].codeLen;
+  if(builderCode.length >= len) return;
+  builderCode.push(colorId);
+  renderBuilderSlots();
+}
+
+function renderBuilderSlots(){
+  const len = RARITY_DIFFICULTY[builderRarity].codeLen;
+  const children = builderSlotsEl.children;
+  for(let i=0;i<len;i++){
+    const slot = children[i];
+    if(!slot) continue;
+    if(builderCode[i]){
+      slot.classList.add('filled');
+      slot.innerHTML = `<div class="slot-dot" style="background:${colorHex(builderCode[i])}"></div>`;
+      slot.onclick = () => { builderCode.splice(i,1); renderBuilderSlots(); };
+    } else {
+      slot.classList.remove('filled');
+      slot.innerHTML = '';
+      slot.onclick = null;
+    }
+  }
+}
+
+function encodeVault(vault){
+  const json = JSON.stringify(vault);
+  return btoa(encodeURIComponent(json));
+}
+
+function decodeVault(str){
+  try{
+    const json = decodeURIComponent(atob(str));
+    const v = JSON.parse(json);
+    const expectedLen = (RARITY_DIFFICULTY[v.rarity] || RARITY_DIFFICULTY.common).codeLen;
+    if(!Array.isArray(v.code) || v.code.length !== expectedLen) return null;
+    if(!v.code.every(c => COLORS.some(col => col.id === c))) return null;
+    return v;
+  } catch(e){
+    return null;
+  }
+}
+
+function generateVaultLink(){
+  builderErrorEl.textContent = '';
+  const requiredLen = RARITY_DIFFICULTY[builderRarity].codeLen;
+  if(builderCode.length !== requiredLen){
+    builderErrorEl.textContent = `Set all ${requiredLen} pegs before generating a link.`;
+    return;
+  }
+  const rewardMsg = builderRewardEl.value.trim() || "A mystery reward from your friend.";
+  const hintMsg = builderHintEl.value.trim();
+  const vault = {
+    code: builderCode.slice(),
+    rarity: builderRarity,
+    reward: rewardMsg,
+    hint: hintMsg
+  };
+  const encoded = encodeVault(vault);
+  const url = `${location.origin}${location.pathname}?vault=${encoded}`;
+  shareLinkEl.value = url;
+  shareBox.classList.remove('hidden');
+  playRewardChime('common');
+}
+
+function checkForIncomingVault(){
+  const params = new URLSearchParams(location.search);
+  const encoded = params.get('vault');
+  if(!encoded) return;
+  const decoded = decodeVault(encoded);
+  if(decoded){
+    incomingVault = decoded;
+  }
+}
+
+/* ---------- Public mode leaderboard (local-only, no backend yet) ---------- */
+const LB_KEY = 'crackTheVault_publicLeaderboard';
+
+function loadLeaderboard(){
+  try{
+    const raw = localStorage.getItem(LB_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e){
+    return [];
+  }
+}
+
+function saveLeaderboardEntry(entry){
+  try{
+    const entries = loadLeaderboard();
+    entries.push(entry);
+    localStorage.setItem(LB_KEY, JSON.stringify(entries));
+  } catch(e){
+    // localStorage unavailable — leaderboard just won't persist this run
+  }
+}
+
+function recordPublicResult(cracked, guessesUsed){
+  saveLeaderboardEntry({
+    rarity: currentRarity,
+    codeLen: CODE_LEN,
+    cracked: cracked,
+    guesses: cracked ? guessesUsed : null,
+    date: new Date().toISOString()
+  });
+}
+
+function renderLeaderboard(){
+  const entries = loadLeaderboard();
+  const cracked = entries.filter(e => e.cracked);
+  const tiers = ['legendary', 'rare', 'common'];
+  const medalClass = i => i===0 ? 'gold' : i===1 ? 'silver' : i===2 ? 'bronze' : '';
+
+  if(cracked.length === 0){
+    leaderboardContent.innerHTML = `<div class="lb-empty">No vaults cracked yet in Public mode. Go crack one!</div>`;
+    return;
+  }
+
+  let html = '';
+  tiers.forEach(tier => {
+    const tierEntries = cracked
+      .filter(e => e.rarity === tier)
+      .sort((a,b) => a.guesses - b.guesses || new Date(b.date) - new Date(a.date))
+      .slice(0, 10);
+
+    html += `<div class="lb-tier-label" style="color:var(--rarity-${tier})">${RARITY_LABELS[tier]}</div>`;
+
+    if(tierEntries.length === 0){
+      html += `<div class="lb-empty">No ${tier} vaults cracked yet.</div>`;
+      return;
+    }
+
+    const rows = tierEntries.map((e,i) => `
+      <tr class="${medalClass(i)}">
+        <td>#${i+1}</td>
+        <td>${e.guesses} guess${e.guesses===1?'':'es'}</td>
+        <td>${new Date(e.date).toLocaleDateString()}</td>
+      </tr>
+    `).join('');
+
+    html += `
+      <table class="lb-table">
+        <thead><tr><th>Rank</th><th>Guesses</th><th>Date</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  });
+
+  leaderboardContent.innerHTML = html;
 }
 
 function addToGuess(colorId){
@@ -731,6 +1262,11 @@ function submitGuess(){
   for(let i=0;i<fb.black;i++){ setTimeout(playPegBlack, 120 + i*90); }
   for(let i=0;i<fb.white;i++){ setTimeout(playPegWhite, 120 + (fb.black+i)*90); }
 
+  if(currentMode === 'public'){
+    publicAttemptCount++;
+    updateModeStats();
+  }
+
   if(fb.black === CODE_LEN){
     winGame();
   } else if(guessesLeft <= 0){
@@ -744,10 +1280,19 @@ function submitGuess(){
 function winGame(){
   gameOver = true;
   submitBtn.disabled = true;
+  hintBtn.disabled = true;
   statusMsgEl.textContent = 'CRACKED! Opening the vault...';
   statusMsgEl.className = 'status-msg win';
   lever.classList.add('pulled');
   vaultGlow.classList.add('pulse');
+
+  if(currentMode === 'solo'){
+    soloStreak++;
+    updateModeStats();
+  }
+  if(currentMode === 'public'){
+    recordPublicResult(true, MAX_GUESSES - guessesLeft);
+  }
 
   playDialSpin();
   playTumblerClicks(CODE_LEN);
@@ -760,7 +1305,10 @@ function winGame(){
   setTimeout(() => {
     rewardRarityLabel.textContent = RARITY_LABELS[currentRarity];
     rewardRarityLabel.style.color = `var(--rarity-${currentRarity})`;
-    rewardText.textContent = REWARD_TEXT[currentRarity];
+    if(currentMode === 'solo') rewardText.textContent = SOLO_REWARD_TEXT;
+    else if(currentMode === 'public') rewardText.textContent = PUBLIC_REWARD_TEXT;
+    else if(currentMode === 'friend' && incomingVault) rewardText.textContent = incomingVault.reward;
+    else rewardText.textContent = REWARD_TEXT[currentRarity];
     rewardCard.classList.add('show');
     playRewardChime(currentRarity);
   }, 900);
@@ -769,18 +1317,204 @@ function winGame(){
 function loseGame(){
   gameOver = true;
   submitBtn.disabled = true;
+  hintBtn.disabled = true;
   statusMsgEl.textContent = 'Out of attempts. The vault stays locked — try a new one.';
   statusMsgEl.className = 'status-msg lose';
   playLockFail();
+  if(currentMode === 'solo'){
+    soloStreak = 0;
+    updateModeStats();
+  }
+  if(currentMode === 'public'){
+    recordPublicResult(false, null);
+  }
+}
+
+function useHint(){
+  if(gameOver) return;
+  if(currentMode === 'solo'){
+    if(soloHintCharges <= 0) return;
+    soloHintCharges--;
+    revealOneCorrectSlot();
+    playHint();
+    statusMsgEl.textContent = `Hint used — ${soloHintCharges} left today.`;
+    statusMsgEl.className = 'status-msg info';
+    updateModeStats();
+    updateHintButton();
+  } else if(currentMode === 'friend'){
+    if(friendHintUsed) return;
+    friendHintUsed = true;
+    playHint();
+    const hintMsg = (incomingVault && incomingVault.hint) ? incomingVault.hint : "Look closer at the middle two pegs.";
+    statusMsgEl.textContent = `Hint from your friend: "${hintMsg}"`;
+    statusMsgEl.className = 'status-msg info';
+    updateHintButton();
+  }
+}
+
+function revealOneCorrectSlot(){
+  // Fill the first empty guess slot with the correct color for that position
+  for(let i=0;i<CODE_LEN;i++){
+    if(!currentGuess[i]){
+      currentGuess[i] = secretCode[i];
+      renderSlots();
+      return;
+    }
+  }
+}
+
+function updateHintButton(){
+  if(currentMode === 'public'){
+    hintBtn.classList.add('hidden');
+    return;
+  }
+  hintBtn.classList.remove('hidden');
+  if(currentMode === 'solo'){
+    hintBtn.textContent = `Use Hint (${soloHintCharges} 🔑)`;
+    hintBtn.disabled = soloHintCharges <= 0 || gameOver;
+  } else if(currentMode === 'friend'){
+    hintBtn.textContent = friendHintUsed ? 'Hint Used' : 'Ask for Hint';
+    hintBtn.disabled = friendHintUsed || gameOver;
+  }
+}
+
+function updateModeStats(){
+  modeStats.innerHTML = '';
+  if(currentMode === 'solo'){
+    const r = document.createElement('div');
+    r.className = 'stat-badge';
+    r.style.color = `var(--rarity-${currentRarity})`;
+    r.textContent = RARITY_LABELS[currentRarity];
+    modeStats.appendChild(r);
+    const b = document.createElement('div');
+    b.className = 'stat-badge';
+    b.textContent = `🔥 Streak: ${soloStreak}`;
+    modeStats.appendChild(b);
+    const c = document.createElement('div');
+    c.className = 'stat-badge muted';
+    c.textContent = `🔑 Hints left: ${soloHintCharges}`;
+    modeStats.appendChild(c);
+  } else if(currentMode === 'friend'){
+    const b = document.createElement('div');
+    b.className = 'stat-badge muted';
+    b.textContent = `Rarity set by codemaker`;
+    modeStats.appendChild(b);
+  } else if(currentMode === 'public'){
+    const r = document.createElement('div');
+    r.className = 'stat-badge';
+    r.style.color = `var(--rarity-${currentRarity})`;
+    r.textContent = RARITY_LABELS[currentRarity];
+    modeStats.appendChild(r);
+    const b = document.createElement('div');
+    b.className = 'stat-badge muted';
+    b.textContent = `🌍 ${publicAttemptCount + Math.floor(Math.random()*40)+12} attempts on this vault`;
+    modeStats.appendChild(b);
+  }
+}
+
+function switchMode(mode){
+  currentMode = mode;
+  [...modeTabs.children].forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  modeSubtitle.textContent = MODE_SUBTITLES[mode];
+  rarityRow.classList.toggle('hidden', mode !== 'friend');
+  friendSubtabs.classList.toggle('hidden', mode !== 'friend');
+
+  if(mode === 'friend'){
+    if(incomingVault && friendSubTab !== 'build'){
+      friendSubTab = 'play';
+    }
+    switchFriendSubTab(friendSubTab);
+    leaderboardBtn.classList.add('hidden');
+    leaderboardPanel.classList.add('hidden');
+  } else {
+    builderPanel.classList.add('hidden');
+    playArea.classList.remove('hidden');
+    incomingBanner.classList.add('hidden');
+    leaderboardPanel.classList.add('hidden');
+    leaderboardBtn.classList.toggle('hidden', mode !== 'public');
+    resetGame();
+  }
+}
+
+function switchFriendSubTab(sub){
+  friendSubTab = sub;
+  [...friendSubtabs.children].forEach(t => t.classList.toggle('active', t.dataset.sub === sub));
+  if(sub === 'build'){
+    builderPanel.classList.remove('hidden');
+    playArea.classList.add('hidden');
+    incomingBanner.classList.add('hidden');
+    rarityRow.classList.add('hidden');
+  } else {
+    builderPanel.classList.add('hidden');
+    playArea.classList.remove('hidden');
+    rarityRow.classList.toggle('hidden', !!incomingVault);
+    if(incomingVault){
+      incomingBanner.textContent = `🔓 You've been sent a vault! Rarity: ${RARITY_LABELS[incomingVault.rarity]}`;
+      incomingBanner.classList.remove('hidden');
+    } else {
+      incomingBanner.classList.add('hidden');
+    }
+    resetGame();
+  }
+}
+
+friendSubtabs.addEventListener('click', (e) => {
+  const btn = e.target.closest('.subtab');
+  if(!btn) return;
+  switchFriendSubTab(btn.dataset.sub);
+});
+
+builderRarityRow.addEventListener('click', (e) => {
+  const btn = e.target.closest('.rarity-btn');
+  if(!btn) return;
+  const newRarity = btn.dataset.r;
+  const oldLen = RARITY_DIFFICULTY[builderRarity].codeLen;
+  const newLen = RARITY_DIFFICULTY[newRarity].codeLen;
+  [...builderRarityRow.children].forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  builderRarity = newRarity;
+  if(newLen !== oldLen && builderCode.length > 0){
+    builderCode = [];
+    builderErrorEl.textContent = `Code length changed to ${newLen} pegs for this rarity — code reset.`;
+  } else {
+    builderErrorEl.textContent = '';
+  }
+  buildBuilderSlots();
+  renderBuilderSlots();
+});
+
+generateLinkBtn.addEventListener('click', generateVaultLink);
+
+copyLinkBtn.addEventListener('click', () => {
+  shareLinkEl.select();
+  navigator.clipboard.writeText(shareLinkEl.value).then(() => {
+    copyLinkBtn.textContent = 'Copied!';
+    setTimeout(() => { copyLinkBtn.textContent = 'Copy Link'; }, 1500);
+  }).catch(() => {
+    document.execCommand('copy');
+  });
+});
+
+leaderboardBtn.addEventListener('click', () => {
+  renderLeaderboard();
+  playArea.classList.add('hidden');
+  leaderboardPanel.classList.remove('hidden');
+});
+
+leaderboardBackBtn.addEventListener('click', () => {
+  leaderboardPanel.classList.add('hidden');
+  playArea.classList.remove('hidden');
+});
+
+function applyRarityDifficulty(rarity){
+  const d = RARITY_DIFFICULTY[rarity] || RARITY_DIFFICULTY.common;
+  CODE_LEN = d.codeLen;
+  MAX_GUESSES = d.maxGuesses;
 }
 
 function resetGame(){
-  secretCode = newSecret();
   currentGuess = [];
-  guessesLeft = MAX_GUESSES;
-  gameOver = false;
   historyEl.innerHTML = '';
-  guessCountEl.textContent = `Attempts left: ${guessesLeft}`;
   statusMsgEl.textContent = '';
   statusMsgEl.className = 'status-msg';
   vaultDoor.classList.remove('open');
@@ -788,12 +1522,55 @@ function resetGame(){
   lever.classList.remove('pulled');
   lightBeam.classList.remove('flash');
   rewardCard.classList.remove('show');
+  friendHintUsed = false;
+
+  if(currentMode === 'friend' && incomingVault){
+    currentRarity = incomingVault.rarity;
+    applyRarityDifficulty(currentRarity);
+    secretCode = incomingVault.code.slice();
+    vaultGlow.dataset.r = currentRarity;
+  } else if(currentMode !== 'friend'){
+    currentRarity = randomRarity();
+    applyRarityDifficulty(currentRarity);
+    secretCode = newSecret();
+    vaultGlow.dataset.r = currentRarity;
+  } else {
+    const activeBtn = rarityRow.querySelector('.rarity-btn.active');
+    currentRarity = activeBtn ? activeBtn.dataset.r : 'common';
+    applyRarityDifficulty(currentRarity);
+    secretCode = newSecret();
+    vaultGlow.dataset.r = currentRarity;
+  }
+
+  guessesLeft = MAX_GUESSES;
+  gameOver = false;
+  guessCountEl.textContent = `Attempts left: ${guessesLeft}`;
+
+  if(currentMode === 'public'){
+    publicAttemptCount = 0;
+  }
+
   buildTumblers();
   buildSlots();
   renderSlots();
+  updateModeStats();
+  updateHintButton();
 }
 
-const soundToggle = document.getElementById('soundToggle');
+rarityRow.addEventListener('click', (e) => {
+  const btn = e.target.closest('.rarity-btn');
+  if(!btn) return;
+  [...rarityRow.children].forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  resetGame();
+});
+
+modeTabs.addEventListener('click', (e) => {
+  const btn = e.target.closest('.mode-tab');
+  if(!btn) return;
+  switchMode(btn.dataset.mode);
+});
+
 soundToggle.addEventListener('click', () => {
   ensureAudio();
   soundOn = !soundOn;
@@ -801,20 +1578,15 @@ soundToggle.addEventListener('click', () => {
   soundToggle.classList.toggle('on', soundOn);
 });
 
-rarityRow.addEventListener('click', (e) => {
-  const btn = e.target.closest('.rarity-btn');
-  if(!btn) return;
-  [...rarityRow.children].forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentRarity = btn.dataset.r;
-  vaultGlow.dataset.r = currentRarity;
-});
-
 submitBtn.addEventListener('click', submitGuess);
 resetBtn.addEventListener('click', resetGame);
+hintBtn.addEventListener('click', useHint);
 
 buildPalette();
-resetGame();
+buildBuilderPalette();
+buildBuilderSlots();
+checkForIncomingVault();
+switchMode(incomingVault ? 'friend' : 'solo');
 </script>
 </body>
 </html>
