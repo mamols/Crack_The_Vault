@@ -792,9 +792,9 @@ const SOLO_REWARD_TEXT = "A new vault skin for your collection.";
 const PUBLIC_REWARD_TEXT = "A new dial style, plus credit on the Stumper Board if this vault took others a while.";
 
 const MODE_SUBTITLES = {
-  solo: "Today's daily vault. Crack it to keep your streak alive and earn a cosmetic unlock.",
+  solo: "Pick a rarity and crack today's vault. Higher rarity means a harder code and a better cosmetic unlock.",
   friend: "A vault a friend built just for you — the harder it is, the better the reward.",
-  public: "A vault set by another player. No hints here — it's a level playing field for the leaderboard."
+  public: "Pick a rarity and crack a community vault. No hints here — it's a level playing field for the leaderboard."
 };
 
 let secretCode = [];
@@ -1416,7 +1416,6 @@ function switchMode(mode){
   currentMode = mode;
   [...modeTabs.children].forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
   modeSubtitle.textContent = MODE_SUBTITLES[mode];
-  rarityRow.classList.toggle('hidden', mode !== 'friend');
   friendSubtabs.classList.toggle('hidden', mode !== 'friend');
 
   if(mode === 'friend'){
@@ -1432,6 +1431,7 @@ function switchMode(mode){
     incomingBanner.classList.add('hidden');
     leaderboardPanel.classList.add('hidden');
     leaderboardBtn.classList.toggle('hidden', mode !== 'public');
+    rarityRow.classList.remove('hidden');
     resetGame();
   }
 }
@@ -1528,11 +1528,6 @@ function resetGame(){
     currentRarity = incomingVault.rarity;
     applyRarityDifficulty(currentRarity);
     secretCode = incomingVault.code.slice();
-    vaultGlow.dataset.r = currentRarity;
-  } else if(currentMode !== 'friend'){
-    currentRarity = randomRarity();
-    applyRarityDifficulty(currentRarity);
-    secretCode = newSecret();
     vaultGlow.dataset.r = currentRarity;
   } else {
     const activeBtn = rarityRow.querySelector('.rarity-btn.active');
