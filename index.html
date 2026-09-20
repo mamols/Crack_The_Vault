@@ -24,7 +24,7 @@
   }
 
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html,body{margin:0;padding:0; width:100%; overflow-x:hidden;}
   body{
     background:
       radial-gradient(ellipse at 50% -10%, #232A38 0%, var(--ink) 55%);
@@ -99,10 +99,12 @@
   .mode-stats{
     display:flex;
     justify-content:center;
+    flex-wrap:wrap;
     gap:10px;
     margin-bottom:16px;
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
+    max-width:92vw;
   }
   .stat-badge{
     background:var(--panel);
@@ -296,6 +298,9 @@
     gap:8px;
     margin-bottom:20px;
     align-items:center;
+    flex-wrap:wrap;
+    justify-content:center;
+    max-width:92vw;
   }
   .rarity-btn{
     font-family:'IBM Plex Mono',monospace;
